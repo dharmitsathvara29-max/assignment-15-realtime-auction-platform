@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Live Auction Floor 🏷️</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <!-- ╔═══════════════ USERNAME MODAL ═══════════════╗ -->
+  <div id="modal-overlay" class="modal-overlay">
+    <div class="modal-card">
+      <div class="modal-logo">🏷️</div>
+      <h2>Enter the Auction Floor</h2>
+      <p class="modal-sub">Choose your bidder name to join the live room</p>
+      <input
+        id="username-input"
+        type="text"
+        placeholder="e.g. Vikram, Ananya…"
+        maxlength="30"
+        autocomplete="off"
+      />
+      <button id="modal-enter-btn" class="btn-primary">Enter Floor →</button>
+    </div>
+  </div>
+
+  <!-- ╔═══════════════ MAIN TRADING FLOOR ═══════════════╗ -->
+  <div id="app" class="hidden">
+
+    <!-- ── Top Bar ─────────────────────────────────────── -->
+    <header class="topbar">
+      <div class="topbar-left">
+        <span class="logo">🏷️ AuctionFloor</span>
+        <span class="room-tag" id="room-tag">—</span>
+      </div>
+      <div class="topbar-right">
+        <span class="viewer-badge">👁 <span id="viewer-count">0</span> live</span>
+        <span class="user-chip">🎙 <span id="my-username">—</span></span>
+      </div>
+    </header>
+
+    <!-- ── Alert Banners ──────────────────────────────── -->
+    <div id="outbid-banner" class="banner banner-outbid hidden">
+      <span class="banner-icon">🔔</span>
+      <span id="outbid-msg"></span>
+      <button class="banner-close" onclick="hideBanner('outbid-banner')">✕</button>
+    </div>
+
+    <div id="antisnipe-banner" class="banner banner-antisnipe hidden">
+      <span class="banner-icon">⚡</span>
+      <span id="antisnipe-msg"></span>
+      <button class="banner-close" onclick="hideBanner('antisnipe-banner')">✕</button>
+    </div>
+
+    <!-- ── Main Grid ──────────────────────────────────── -->
+    <main class="grid">
+
+      <!-- ── LEFT: Item card ───────────────────────────── -->
+      <section class="card item-card">
+        <div class="item-image-wrap">
+          <img id="item-image" src="" alt="Auction Item" class="item-image" />
+          <div id="status-chip" class="status-chip status-active">● LIVE</div>
+        </div>
+        <div class="item-info">
+          <h1 id="item-title" class="item-title">Loading…</h1>
+          <p id="item-desc" class="item-desc"></p>
+
+          <div class="price-block">
+            <div class="price-label">Current Bid</div>
+            <div id="current-bid" class="price-value">₹—</div>
+            <div id="min-bid-hint" class="min-bid-hint">Min next bid: ₹—</div>
+          </div>
+
+          <!-- ── Countdown Timer ──────────────────────── -->
+          <div class="timer-wrap">
+            <div class="timer-label">Time Remaining</div>
+            <div id="timer" class="timer">—</div>
+            <div class="timer-bar-wrap"><div id="timer-bar" class="timer-bar"></div></div>
+          </div>
+
+          <!-- ── Bid Controls ────────────────────────── -->
+          <div class="bid-controls">
+            <div class="bid-input-wrap">
+              <span class="rupee-prefix">₹</span>
+              <input
+                id="bid-input"
+                type="number"
+                placeholder="Enter bid amount"
+                min="1"
+                step="1"
+              />
+            </div>
+            <button id="bid-btn" class="btn-bid">🔨 Place Bid</button>
+          </div>
+
+          <!-- Quick-fill suggestion chips -->
+          <div class="quick-fill" id="quick-fill">
+            <!-- Populated by JS -->
+          </div>
+
+          <!-- Rejection / error toast -->
+          <div id="rejection-toast" class="rejection-toast hidden"></div>
+        </div>
+      </section>
+
+      <!-- ── RIGHT: Bid History ──────────────────────── -->
+      <section class="card history-card">
+        <div class="history-header">
+          <h2>📋 Live Bid Feed</h2>
+          <span class="history-count" id="history-count">0 bids</span>
+        </div>
+        <ul id="bid-history" class="bid-history-list">
+          <li class="empty-state">Waiting for the first bid…</li>
+        </ul>
+      </section>
+
+    </main><!-- /grid -->
+
+    <!-- ── SOLD Overlay ───────────────────────────────── -->
+    <div id="sold-overlay" class="sold-overlay hidden">
+      <div class="sold-card">
+        <div class="sold-gavel">🔨</div>
+        <h2 id="sold-title">SOLD!</h2>
+        <p id="sold-winner"></p>
+        <p id="sold-price"></p>
+      </div>
+    </div>
+
+  </div><!-- /app -->
+
+  <!-- Socket.io client (auto-served by the server) -->
+  <script src="/socket.io/socket.io.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
